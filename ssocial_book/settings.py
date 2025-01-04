@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'accounts',
+    'rest_framework',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -76,10 +78,30 @@ WSGI_APPLICATION = 'ssocial_book.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#         'USER': 'myuser',
+#         'PASSWORD': 'Sonu@123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'social_book_db',  # Name of your PostgreSQL database
+        'USER': 'social_book_user',  # PostgreSQL username
+        'PASSWORD': 'Sonu@123',  # PostgreSQL password
+        'HOST': 'localhost',  # Database host
+        'PORT': '5432',  # Database port
     }
 }
 
