@@ -1,16 +1,27 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import RegisterForm
-from .forms import CustomUserCreationForm
+# from .forms import CustomUserCreationForm
 from .models import CustomUser
 from .filters import UserFilter
-from .forms import uploadBookForm
-from .models import UploadedFile
+# from .forms import uploadBookForm
+# from .models import UploadedFile
+
+
+from django.contrib.auth.decorators import login_required
+# from .models import UploadedFile
+from django.utils.timezone import now
+from django.urls import reverse
+from django.http import HttpResponseRedirect
 
 
 
 # Create your views here.
+def index(request):
+    return render(request, 'index.html') 
+
+
 def register_view(request):
     if request.method == 'POST':
         form = RegisterForm(request.POST)
@@ -34,26 +45,55 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
+def forgot_password(request):
+    return render(request,'forgot-password.html')
+
+def dashboard(request):
+    return render(request,'dashboard.html')
+
+
+def logout_view(request):
+    # Logout logic
+    logout(request)
+    return redirect('login')
+
 def authors_and_sellers(request):
     user_filter = UserFilter(request.GET, queryset=CustomUser.objects.all()) 
     return render(request, 'authors_and_sellers.html', {'filter': user_filter})
 
 
 
-def upload_books(request):
+
+from .models import UploadedFile
+from .forms import UploadFileForm
+# @login_required
+def uploaad_books(request):
     if request.method == 'POST':
-        form = uploadBookForm(request.POST, request.FILES)
-        if form.is_valid():
-            uploaded_file = form.save(commit=False)
-            uploaded_file.user = request.user  
-            uploaded_file.save()
-            return redirect('uploaded_files')
-    else:
-        form = uploadBookForm()
-    return render(request, 'upload_books.html', {'form': form})
+        title = request.POST['title']
+        description = request.POST['description']
+        visibility = request.POST['visibility']
+        cost = request.POST.get('cost', None)
+        year_published = request.POST['year_published']
+        file = request.FILES['file']
 
-
-def uploaded_files(request):
-    files = UploadedFile.objects.filter(user=request.user)
-    return render(request, 'uploaded_files.html', {'files': files})
+        # Save the uploaded file
+        UploadedFile.objects.create(
+            user=request.user,
+            title=title,
+            description=description,
+            visibility=visibility,
+            cost=cost,
+            year_published=year_published,
+            file=file
+        )
+        return redirect('uploaded_files')
     
+    return render(request, 'upload_books.html')
+
+
+
+# @login_required
+def uploaded_files(request):
+    # Fetch files uploaded by the logged-in user
+    uploaded_files = UploadedFile.objects.filter(user=request.user)
+    return render(request, 'uploaded_files.html', {'uploaded_files': uploaded_files})
