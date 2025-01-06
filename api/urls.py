@@ -1,6 +1,6 @@
 from django.urls import path
-from .views import fetch_data
+# from .views import fetch_data
 
 urlpatterns = [
-    path('fetch-data/', fetch_data, name='fetch_data'),
+    # path('fetch-data/', fetch_data, name='fetch_data'),
 ]

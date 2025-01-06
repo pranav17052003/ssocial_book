@@ -78,10 +78,37 @@ WSGI_APPLICATION = 'ssocial_book.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-import os
-from pathlib import Path
+# import os
+# from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent
+# BASE_DIR = Path(__file__).resolve().parent.parent
+
+# # Check the environment variable to decide the database
+# USE_POSTGRES = os.getenv('USE_POSTGRES', 'False').lower() == 'true'
+
+# if USE_POSTGRES:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.postgresql',
+#             'NAME': os.getenv('POSTGRES_DB', 'books'),
+#             'USER': os.getenv('POSTGRES_USER', 'myuser'),
+#             'PASSWORD': os.getenv('POSTGRES_PASSWORD', 'mypassword'),
+#             'HOST': os.getenv('POSTGRES_HOST', 'localhost'),
+#             'PORT': os.getenv('POSTGRES_PORT', '5432'),
+#         }
+#     }
+# else:
+#     DATABASES = {
+#         'default': {
+#             'ENGINE': 'django.db.backends.sqlite3',
+#             'NAME': BASE_DIR / 'db.sqlite3',
+#             'USER': 'myuser',
+#             'PASSWORD': 'Sonu@123',
+#             'HOST': 'localhost',
+#             'PORT': '5432',
+#         }
+#     }
+
 
 # DATABASES = {
 #     'default': {
@@ -91,19 +118,30 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #         'PASSWORD': 'Sonu@123',
 #         'HOST': 'localhost',
 #         'PORT': '5432',
+#     },
+#     'postgresql': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'social_book_db',  # Name of your PostgreSQL database
+#         'USER': 'social_book_user',  # PostgreSQL username
+#         'PASSWORD': 'Sonu@123',  # PostgreSQL password
+#         'HOST': 'localhost',  # Database host
+#         'PORT': '5432',  # Database port
 #     }
 # }
+
+
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'social_book_db',  # Name of your PostgreSQL database
-        'USER': 'social_book_user',  # PostgreSQL username
-        'PASSWORD': 'Sonu@123',  # PostgreSQL password
-        'HOST': 'localhost',  # Database host
-        'PORT': '5432',  # Database port
-    }
+        'NAME': 'books',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    },
 }
+
 
 
 # Password validation
