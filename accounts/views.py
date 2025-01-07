@@ -28,21 +28,48 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return redirect('home')
+            return redirect('dashboard')  # Redirect to dashboard after registration
     else:
         form = RegisterForm()
     return render(request, 'register.html', {'form': form})
 
+
+
+
+
+from django.shortcuts import render, redirect
+from django.http import JsonResponse
+import requests
+import logging
+
+logger = logging.getLogger(__name__)
+
 def login_view(request):
     if request.method == 'POST':
-        form = AuthenticationForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = AuthenticationForm()
-    return render(request, 'login.html', {'form': form})
+        username = request.POST.get('username')  # Using username
+        password = request.POST.get('password')
+
+        # Send POST request to Djoser's login endpoint with username instead of email
+        response = requests.post(
+            f"{request.scheme}://{request.get_host()}/api/auth/token/login/",
+            data={"username": username, "password": password},
+        )
+
+        if response.status_code == 200:
+            token = response.json().get("auth_token")
+            # Store token in session
+            request.session['auth_token'] = token
+            logger.info(f"User {username} logged in successfully.")
+            # Redirect to dashboard after successful login
+            return redirect('dashboard')  # Redirect to the dashboard URL
+
+        else:
+            error_message = response.json().get('non_field_errors', ["Invalid credentials"])[0]
+            logger.error(f"Login failed for {username}: {error_message}")
+            return render(request, 'login.html', {'error': error_message})
+
+    return render(request, 'login.html')
+
 
 
 def forgot_password(request):
@@ -67,7 +94,7 @@ def authors_and_sellers(request):
 from .models import UploadedFile
 from .forms import UploadFileForm
 # @login_required
-def uploaad_books(request):
+def upload_books(request):
     if request.method == 'POST':
         title = request.POST['title']
         description = request.POST['description']
@@ -88,9 +115,9 @@ def uploaad_books(request):
         )
         return redirect('uploaded_files')
     
-    return render(request, 'upload_books.html')
+    return render(request, 'upload_books.html', {'current_year': now().year} )
 
-
+# {'upload_books': upload_books}
 
 # @login_required
 def uploaded_files(request):

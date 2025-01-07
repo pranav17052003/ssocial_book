@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Books</title>
+</head>
+<body>
+    <h1>My Books</h1>
+    <ul>
+        {% for file in files %}
+            <li>{{ file.file.name }} (Uploaded at: {{ file.uploaded_at }})</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

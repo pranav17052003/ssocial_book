@@ -41,3 +41,51 @@ class TestAuthView(APIView):
 
     def get(self, request):
         return Response({"message": "Authenticated successfully!", "user": str(request.user)})
+
+
+
+
+
+from django.shortcuts import render
+from .models import UserFile
+from .utils import user_has_uploaded_files
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth.decorators import login_required
+
+@login_required
+@user_has_uploaded_files
+def my_books_view(request):
+    """
+    Render the 'My Books' dashboard where the user can view uploaded files.
+    """
+    files = UserFile.objects.filter(user=request.user)
+    return render(request, 'my_books.html', {'files': files})
+
+
+@login_required
+def upload_books_view(request):
+    """
+    Render the 'Upload Books' page for the user.
+    """
+    return render(request, 'upload_books.html')
+
+
+
+
+
+
+from django.http import HttpResponseRedirect
+from .models import UserFile
+from django.urls import reverse
+
+@login_required
+def upload_books_view(request):
+    """
+    Render the 'Upload Books' page and handle file uploads.
+    """
+    if request.method == 'POST':
+        uploaded_file = request.FILES.get('file')
+        if uploaded_file:
+            UserFile.objects.create(user=request.user, file=uploaded_file)
+            return HttpResponseRedirect(reverse('my-books'))  # Redirect to 'My Books'
+    return render(request, 'upload_books.html')
