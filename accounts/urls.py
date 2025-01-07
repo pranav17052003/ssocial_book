@@ -11,4 +11,5 @@ urlpatterns = [
     path('authors-sellers/', authors_and_sellers, name='authors_and_sellers'),
     path('uploaad-books/, ', uploaad_books, name='uploaad_books'),
     path('uploaded-files/', uploaded_files, name='uploaded_files'),
+    
 ]
